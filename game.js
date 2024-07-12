@@ -25,6 +25,11 @@ monsterImage.onload = function () {
 };
 monsterImage.src = "images/attendance.png";
 
+// Add sound effect variables
+var catchSound = new Audio("yes.mp3");
+var detainedSound = new Audio("tf_nemesis.mp3");
+var notDetainedSound = new Audio("sickomode.mp3");
+
 var hero = {
   speed: 256,
 };
@@ -77,6 +82,7 @@ var update = function (modifier) {
     monster.y <= hero.y + 32
   ) {
     ++monsterCaught;
+    catchSound.play(); // Play catch sound
     reset();
   }
 };
@@ -102,8 +108,10 @@ var render = function () {
   if (finished == true) {
     if (monsterCaught > 22) {
       ctx.fillText("Congrats! You are not detained!", 100, 220);
+      notDetainedSound.play(); // Play not detained sound
     } else {
       ctx.fillText("DETAINED!", 200, 220);
+      detainedSound.play(); // Play detained sound
     }
   }
 };
@@ -139,3 +147,14 @@ requestAnimationFrame =
 
 reset();
 main();
+
+// Add event listener for starting audio on user interaction
+document.addEventListener("click", function () {
+  catchSound
+    .play()
+    .then(() => {
+      catchSound.pause();
+      catchSound.currentTime = 0;
+    })
+    .catch((e) => console.log("Audio play failed:", e));
+});
